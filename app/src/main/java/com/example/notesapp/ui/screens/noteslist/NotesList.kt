@@ -27,10 +27,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,10 +69,14 @@ fun NotesList(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Notes",
-                        color = Color.White
+                        text = stringResource(R.string.notes),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
+                )
             )
         },
         floatingActionButton = {
@@ -99,7 +106,10 @@ fun NotesList(
                             note = state.notes[index],
                             onEditClick = {
                                 onEditClick(state.notes[index].id)
-                            }, onDeleteClick = {})
+                            }, onDeleteClick = {
+                                viewModel.deleteNote(state.notes[index])
+
+                            })
                     }
 
                 }
@@ -119,7 +129,7 @@ fun NoteItem(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -130,7 +140,7 @@ fun NoteItem(
             ) {
                 Text(
                     text = note.title,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
@@ -184,7 +194,7 @@ private fun AddButton(
         FloatingActionButton(
             onClick = onAddClick,
             shape = CircleShape,
-            containerColor = Color(0xFF252525),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(72.dp),
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 0.dp,
@@ -193,7 +203,7 @@ private fun AddButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Add Note",
+                contentDescription = stringResource(R.string.add_note),
                 tint = Color.White,
                 modifier = Modifier.size(35.dp)
             )
@@ -212,7 +222,7 @@ fun EmptyState(
     ) {
         Image(
             painter = painterResource(id = R.drawable.notesemptystate),
-            contentDescription = "Empty State",
+            contentDescription = stringResource(R.string.empty_state),
             modifier = Modifier
                 .size(300.dp)
                 .offset(y = 24.dp),
@@ -220,7 +230,7 @@ fun EmptyState(
 
         )
         Text(
-            "Create your first note !",
+            stringResource(R.string.create_your_first_note),
             textAlign = TextAlign.Center
         )
     }

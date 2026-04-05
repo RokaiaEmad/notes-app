@@ -2,6 +2,8 @@ package com.example.notesapp.ui.screens.noteslist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notesapp.domain.model.Note
+import com.example.notesapp.domain.usecase.DeleteNoteUseCase
 import com.example.notesapp.domain.usecase.GetNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NotesListViewModel @Inject constructor(
-    val getNoteUseCase: GetNoteUseCase
+    val getNoteUseCase: GetNoteUseCase,
+    val deleteNoteUseCase: DeleteNoteUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NotesListUiState())
@@ -56,5 +59,32 @@ class NotesListViewModel @Inject constructor(
                     }
                 }
         }
+    }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            deleteNoteUseCase(note).onStart {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        error = null
+                    )
+                }
+            }.catch { e ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false, error = e.message
+                    )
+                }
+            }.collect {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false, error = null
+                    )
+                }
+            }
+
+        }
+
     }
 }

@@ -13,35 +13,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color.Black,
-    background = Color.Black,
-    surface = Color.Black,
-    onPrimary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White
+    primary = DarkPrimary,
+    background = DarkBackground,
+    surface = DarkSurface,
+    onPrimary = Color.Black,
+    onBackground = DarkOnBackground,
+    onSurface = Color.White,
+    primaryContainer = Color(0xFF252525)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = LightPrimary,
+    background = LightBackground,
+    surface = LightSurface,
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onBackground = LightOnBackground,
+    onSurface =  Color.Black,
+    primaryContainer = LightSurface
 )
 
 @Composable
 fun NotesAppTheme(
-    darkTheme: Boolean =true,
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true
+    darkTheme: Boolean =isSystemInDarkTheme(),
+    dynamicColor: Boolean = false
     ,
     content: @Composable () -> Unit
 ) {

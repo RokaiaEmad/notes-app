@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">NotesApp</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="title">Title</string>
+    <string name="type_something">Type something...</string>
+    <string name="title_and_content_are_required">Title and content are required</string>
+    <string name="add_note">Add Note</string>
+    <string name="empty_state">Empty State</string>
+    <string name="create_your_first_note">Create your first note !</string>
+    <string name="notes">Notes</string>
 </resources>

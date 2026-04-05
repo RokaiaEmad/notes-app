@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.notesapp.R
 import com.example.notesapp.ui.common.ErrorContent
 import com.example.notesapp.ui.common.LoadingContent
 
@@ -57,7 +59,8 @@ fun AddEditNote(
     LaunchedEffect(uiState.isSaved) {
         if (uiState.isSaved) onBackClick()
     }
-    Scaffold {
+    Scaffold(
+    ) { paddingValues ->
         when {
             uiState.isLoading -> LoadingContent()
 
@@ -71,7 +74,7 @@ fun AddEditNote(
             else ->
 
                 Column(
-                    modifier = Modifier.statusBarsPadding()
+                    modifier = Modifier.padding(paddingValues)
                 ) {
                     Header(onBackClick, onSaveClick = {
                         if (title.isBlank() || content.isBlank()) {
@@ -93,7 +96,7 @@ fun AddEditNote(
 @Composable
 private fun ErrorMessage() {
     Text(
-        text = "Title and content are required",
+        text = stringResource(R.string.title_and_content_are_required),
         color = Color.Red,
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
@@ -114,21 +117,21 @@ private fun ContentTextField(
         onValueChange = onValueChange,
         placeholder = {
             Text(
-                text = "Type something...",
+                text = stringResource(R.string.type_something),
                 fontSize = 20.sp,
                 color = Color.Gray
             )
         },
         textStyle = TextStyle(
             fontSize = 20.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         ),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.White
+            cursorColor = MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +149,7 @@ private fun TitleTextField(
         onValueChange = onValueChange,
         placeholder = {
             Text(
-                text = "Title",
+                text = stringResource(R.string.title),
                 fontSize = 28.sp,
                 color = Color.Gray,
                 fontWeight = FontWeight.Bold
@@ -155,14 +158,14 @@ private fun TitleTextField(
         textStyle = TextStyle(
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         ),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = Color.White
+            cursorColor =MaterialTheme.colorScheme.onBackground
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -191,7 +194,7 @@ private fun BackButton(onBackClick: () -> Unit) {
     Box(
         modifier = Modifier
             .background(
-                color = Color(0xFF2C2C2C),
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable { onBackClick() }
@@ -200,7 +203,7 @@ private fun BackButton(onBackClick: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.back),
             tint = Color.White
         )
     }
@@ -213,7 +216,7 @@ private fun SaveButton(
     Box(
         modifier = Modifier
             .background(
-                color = Color(0xFF2C2C2C),
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable {
@@ -224,7 +227,7 @@ private fun SaveButton(
     ) {
         Icon(
             imageVector = Icons.Default.Done,
-            contentDescription = "Save",
+            contentDescription = stringResource(R.string.save),
             tint = Color.White
         )
     }
