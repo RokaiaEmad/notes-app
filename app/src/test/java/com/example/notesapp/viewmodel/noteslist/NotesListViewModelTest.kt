@@ -16,7 +16,9 @@ import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
 import app.cash.turbine.test
+import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flow
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 
@@ -36,6 +38,11 @@ class NotesListViewModelTest {
         Dispatchers.setMain(testDispatcher)
     }
 
+    private fun buildViewModel() {
+        viewModel = NotesListViewModel(getNoteUseCase, deleteNoteUseCase)
+    }
+
+
     @Test
     fun `test getNotes with success response then return success`() = runTest {
         val notes = listOf(
@@ -48,7 +55,7 @@ class NotesListViewModelTest {
 
         viewModel.uiState.test {
 
-           // skipItems(1)
+            // skipItems(1)
 
             val initial = awaitItem()
             assertEquals(false, initial.isLoading)
@@ -69,12 +76,9 @@ class NotesListViewModelTest {
 
     }
 
-    private fun buildViewModel() {
-        viewModel = NotesListViewModel(getNoteUseCase, deleteNoteUseCase)
-    }
 
     @Test
-    fun`test getNotes with error response then return error`()=runTest{
+    fun `test getNotes with error response then return error`() = runTest {
 
         coEvery { getNoteUseCase() } returns flow { throw RuntimeException("DB error") }
         buildViewModel()
@@ -83,20 +87,75 @@ class NotesListViewModelTest {
             awaitItem() // initial
             awaitItem() // loading
 
-            val error=awaitItem()
-            assertEquals(false,error.isLoading)
-            assertEquals(emptyList<Note>(),error.notes)
-            assertEquals("DB error",error.error)
+            val error = awaitItem()
+            assertEquals(false, error.isLoading)
+            assertEquals(emptyList<Note>(), error.notes)
+            assertEquals("DB error", error.error)
             cancelAndIgnoreRemainingEvents()
 
         }
 
+    }
+
+    @Test
+    fun `test deleteNote with success response then return success`() = runTest {
+
+        val note = Note(id = 1, title = "Test Note", content = "Test Content", date = 1000L)
+
+        coEvery { getNoteUseCase() } returns flowOf(emptyList())
+        coEvery {deleteNoteUseCase(note)} returns flowOf(Unit)
+        buildViewModel()
+
+        viewModel.deleteNote(note)
+
+        viewModel.uiState.test {
+            awaitItem()
+            val loading=awaitItem()
+            assertEquals(true,loading.isLoading)
+            assertNull(loading.error)
 
 
+            val success = awaitItem()
+            assertEquals(false, success.isLoading)
+            assertNull(success.error)
 
+            cancelAndIgnoreRemainingEvents()
+        }
 
     }
 
+    @Test
+    fun `test deleteNote with error response then return error`() = runTest {
+
+        val note = Note(id = 1, title = "Test Note", content = "Test Content", date = 1000L)
+
+        coEvery { getNoteUseCase() } returns flowOf(emptyList())
+        coEvery { deleteNoteUseCase(note) } returns flow { throw RuntimeException("DB error") }
+
+        buildViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.uiState.test {
+            awaitItem()
+
+            viewModel.deleteNote(note)
+
+            val loading = awaitItem()
+            assertEquals(true, loading.isLoading)
+            assertNull(loading.error)
+
+            val error = awaitItem()
+            assertEquals(false, error.isLoading)
+            assertEquals("DB error", error.error)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
+    }
 
 }
 
