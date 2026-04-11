@@ -18,6 +18,7 @@ import org.junit.Test
 import app.cash.turbine.test
 import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -152,9 +153,11 @@ class NotesListViewModelTest {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         unmockkAll()
+        Dispatchers.resetMain()
     }
 
 }
