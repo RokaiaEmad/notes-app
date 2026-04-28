@@ -1,4 +1,4 @@
-package com.example.notesapp.viewmodel.add_edit_note
+package com.example.notesapp.presentation.add_edit_note
 
 import androidx.lifecycle.SavedStateHandle
 import com.example.notesapp.domain.model.Note

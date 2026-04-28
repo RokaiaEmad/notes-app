@@ -1,4 +1,4 @@
-package com.example.notesapp.viewmodel.noteslist
+package com.example.notesapp.presentation.noteslist
 
 import com.example.notesapp.domain.model.Note
 import com.example.notesapp.domain.usecase.DeleteNoteUseCase
